@@ -7,58 +7,94 @@
   <style>
     body {
       background-color: #f8f9fa;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .container {
-      max-width: 600px;
-      margin-top: 50px;
     }
     .bond-graphic {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
-    #results p {
-      font-size: 1.2rem;
+    .bond-table td {
+      padding: 8px 12px;
+    }
+    .bond-table td:first-child {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .bond-table {
+      border: 1px solid #198754;
+      width: 100%;
+    }
+    .bond-table tr {
+      border-bottom: 1px solid #198754;
     }
   </style>
 </head>
 <body>
-  <div class="container text-center">
-    <div class="bond-graphic">
-      <img src="https://cdn-icons-png.flaticon.com/512/6009/6009833.png" alt="Bond Icon" width="100">
+  <div class="container mt-5">
+    <div class="row">
+      <!-- Form -->
+      <div class="col-md-6">
+        <div class="bond-graphic">
+          <img src="https://cdn-icons-png.flaticon.com/512/6009/6009833.png" alt="Bond Icon" width="80">
+        </div>
+        <h2>Bond Pricing Calculator</h2>
+        <form id="bond-form" class="text-start">
+          <div class="mb-3">
+            <label class="form-label">Bought Date</label>
+            <input name="bought_date" type="date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sold Date</label>
+            <input name="sold_date" type="date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Rate (%)</label>
+            <input name="rate" type="number" step="0.01" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input name="quantity" type="number" class="form-control" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Client Type</label>
+            <select name="client_type" class="form-select">
+              <option value="Individual">Individual</option>
+              <option value="Corporation">Corporation</option>
+            </select>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Calculate</button>
+          </div>
+        </form>
+        <div id="results" class="mt-4"></div>
+      </div>
+
+      <!-- Bond Info Table -->
+      <div class="col-md-6">
+        <h4 class="text-success mb-3">Bond Information</h4>
+        <table class="bond-table table table-bordered border-success">
+          <tr>
+            <td>Bond face value</td>
+            <td>100,000</td>
+          </tr>
+          <tr>
+            <td>Date issuance</td>
+            <td>6/9/2021</td>
+          </tr>
+          <tr>
+            <td>Maturity date</td>
+            <td>6/9/2024</td>
+          </tr>
+          <tr>
+            <td>Coupon rate</td>
+            <td>10.5%</td>
+          </tr>
+          <tr>
+            <td>Coupon period</td>
+            <td>Once per year</td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <h1 class="mb-4">Bond Pricing Calculator</h1>
-
-    <form id="bond-form" class="text-start">
-      <div class="mb-3">
-        <label class="form-label">Bought Date</label>
-        <input name="bought_date" type="date" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Sold Date</label>
-        <input name="sold_date" type="date" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Rate (%)</label>
-        <input name="rate" type="number" step="0.01" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Quantity</label>
-        <input name="quantity" type="number" class="form-control" required>
-      </div>
-      <div class="mb-4">
-        <label class="form-label">Client Type</label>
-        <select name="client_type" class="form-select">
-          <option value="Individual">Individual</option>
-          <option value="Corporation">Corporation</option>
-        </select>
-      </div>
-      <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Calculate</button>
-      </div>
-    </form>
-
-    <div id="results" class="mt-4"></div>
   </div>
 
   <script>
