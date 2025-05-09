@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bond Pricing Tool</title>
+</head>
+<body>
+  <h1>Bond Pricing Calculator</h1>
+  <form id="bond-form">
+    <label>Bought Date: <input name="bought_date" type="date" required></label><br>
+    <label>Sold Date: <input name="sold_date" type="date" required></label><br>
+    <label>Rate (%): <input name="rate" type="number" step="0.01" required></label><br>
+    <label>Quantity: <input name="quantity" type="number" required></label><br>
+    <label>Client Type:
+      <select name="client_type">
+        <option value="Individual">Individual</option>
+        <option value="Corporation">Corporation</option>
+      </select>
+    </label><br><br>
+    <button type="submit">Calculate</button>
+  </form>
+
+  <div id="results"></div>
+
+  <script>
+    document.getElementById("bond-form").onsubmit = async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const res = await fetch("/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bought_date: form.bought_date.value,
+          sold_date: form.sold_date.value,
+          rate: parseFloat(form.rate.value) / 100,
+          client_type: form.client_type.value,
+          quantity: parseFloat(form.quantity.value)
+        })
+      });
+      const json = await res.json();
+      document.getElementById("results").innerHTML = `
+        <p><strong>Buy Price:</strong> $${json.buy_price}</p>
+        <p><strong>Sell Price:</strong> $${json.sell_price}</p>
+        <a href="${json.download_url}" download>Download Excel</a>
+      `;
+    };
+  </script>
+</body>
+</html>
