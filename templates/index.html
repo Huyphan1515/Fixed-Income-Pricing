@@ -3,24 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title>Bond Pricing Tool</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin-top: 50px;
+    }
+    .bond-graphic {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    #results p {
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bond Pricing Calculator</h1>
-  <form id="bond-form">
-    <label>Bought Date: <input name="bought_date" type="date" required></label><br>
-    <label>Sold Date: <input name="sold_date" type="date" required></label><br>
-    <label>Rate (%): <input name="rate" type="number" step="0.01" required></label><br>
-    <label>Quantity: <input name="quantity" type="number" required></label><br>
-    <label>Client Type:
-      <select name="client_type">
-        <option value="Individual">Individual</option>
-        <option value="Corporation">Corporation</option>
-      </select>
-    </label><br><br>
-    <button type="submit">Calculate</button>
-  </form>
+  <div class="container text-center">
+    <div class="bond-graphic">
+      <img src="https://cdn-icons-png.flaticon.com/512/6009/6009833.png" alt="Bond Icon" width="100">
+    </div>
+    <h1 class="mb-4">Bond Pricing Calculator</h1>
 
-  <div id="results"></div>
+    <form id="bond-form" class="text-start">
+      <div class="mb-3">
+        <label class="form-label">Bought Date</label>
+        <input name="bought_date" type="date" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Sold Date</label>
+        <input name="sold_date" type="date" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Rate (%)</label>
+        <input name="rate" type="number" step="0.01" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input name="quantity" type="number" class="form-control" required>
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Client Type</label>
+        <select name="client_type" class="form-select">
+          <option value="Individual">Individual</option>
+          <option value="Corporation">Corporation</option>
+        </select>
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Calculate</button>
+      </div>
+    </form>
+
+    <div id="results" class="mt-4"></div>
+  </div>
 
   <script>
     document.getElementById("bond-form").onsubmit = async function (e) {
@@ -39,9 +78,9 @@
       });
       const json = await res.json();
       document.getElementById("results").innerHTML = `
-        <p><strong>Buy Price:</strong> $${json.buy_price}</p>
-        <p><strong>Sell Price:</strong> $${json.sell_price}</p>
-        <a href="${json.download_url}" download>Download Excel</a>
+        <p><strong>Buy Price:</strong> $${json.buy_price.toLocaleString()}</p>
+        <p><strong>Sell Price:</strong> $${json.sell_price.toLocaleString()}</p>
+        <a class="btn btn-success" href="${json.download_url}" download>Download Excel</a>
       `;
     };
   </script>
