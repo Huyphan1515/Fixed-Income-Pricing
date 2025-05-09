@@ -75,4 +75,4 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
 
     buy_price = sum([cf[3] / ((1 + coupon_rate + 0.02) ** ((cd - bought_dt).days / 365)) for cf, cd in zip(cashflows, coupon_dates)])
     sell_price = (buy_price * (1 + rate * (sold_dt - bought_dt).days / 365)) / (1 - (0.001 if client_type == "Individual" else 0))
-    return buy_price, sell_price<your function pasted here>
+    return buy_price, sell_price
