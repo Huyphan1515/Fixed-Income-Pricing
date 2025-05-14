@@ -5,7 +5,7 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
     from openpyxl.utils import quote_sheetname
     from openpyxl.styles import Font
     from datetime import datetime, timedelta
-
+# Bond Info
     bond_par = 100000
     coupon_rate = 0.105
     coupon_dates = [datetime(2022, 6, 9), datetime(2023, 6, 9), datetime(2024, 6, 9)]
@@ -13,7 +13,7 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
 
     bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
     sold_dt = datetime.strptime(sold_date, "%Y-%m-%d")
-
+# Cashflow generations
     cashflows = []
     for i, cd in enumerate(coupon_dates):
         ex_cd = cd - timedelta(days=10)
@@ -23,25 +23,25 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
         if i == len(coupon_dates) - 1:
             cf += bond_par
         cashflows.append([cd.date(), ex_cd.date(), "10.5%", round(cf, 4)])
-
+# Cashflow DF
     cf_df = pd.DataFrame(cashflows, columns=["Coupon Date", "Ex-Coupon Date", "Coupon Rate", "Cashflow"])
-
+# Create Cash flow sheet
     wb = Workbook()
     ws_cf = wb.active
     ws_cf.title = "Cash Flow Table"
     for r in dataframe_to_rows(cf_df, index=False, header=True):
         ws_cf.append(r)
     for cell in ws_cf[1]: cell.font = Font(bold=True)
-
+# Create User Input sheet
     ws_input = wb.create_sheet("User Input")
     ws_input.append(["Bought Date", "Sold Date", "Quantities", "Client Type", "Rate"])
     ws_input.append([bought_date, sold_date, quantity, client_type, rate])
-
+# Create tax table sheet
     ws_tax = wb.create_sheet("Tax Table")
     ws_tax.append(["Client Type", "Coupon Tax", "Transaction Tax"])
     ws_tax.append(["Individual", 0.05, 0.001])
     ws_tax.append(["Corporation", 0.0, 0.0])
-
+# Create PV Table sheet
     ws_pv = wb.create_sheet("PV Table")
     ws_pv.append(["Coupon Date", "Ex-Coupon Date", "Coupon Rate", "Cashflow", "Year Frac", "Discount Factor", "Present Value"])
     for cell in ws_pv[1]: cell.font = Font(bold=True)
@@ -58,21 +58,21 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
         ws_pv[f"E{row}"].value = f"=(A{row}-{input_sheet}!A2)/365"
         ws_pv[f"F{row}"].value = f"=1/(1+C{row}-0.2%)^E{row}"
         ws_pv[f"G{row}"].value = f"=D{row}*F{row}"
-
+# Calculation summary sheet
+    # Calculate Buy Price
     ws_summary = wb.create_sheet("Summary")
     ws_summary["A1"] = "Buy Price"
     ws_summary["A2"] = "=SUM('PV Table'!G2:G4)"
     ws_summary["B1"] = "Cash Flow Receivable"
     ws_summary["B2"] = "=SUMPRODUCT(('Cash Flow Table'!B2:B4>=--'User Input'!A2)*('Cash Flow Table'!B2:B4<=--'User Input'!B2)*('Cash Flow Table'!D2:D4)*(1-IF('User Input'!D2=\"Individual\",0.05,0)))"
-
+    # Calculate Sell Price
     ws_summary["C1"] = "Transaction Tax Rate"
     ws_summary["C2"] = "=IF('User Input'!D2=\"Individual\",0.001,0)"
     ws_summary["D1"] = "Sell Price"
     ws_summary["D2"] = "=(A2 * (100%+'User Input'!E2*('User Input'!B2-'User Input'!A2)/365)-B2)/(1-C2)"
     for cell in ws_summary["1:1"]: cell.font = Font(bold=True)
-
     wb.save(filepath)
-
+    # Results return
     buy_price = sum([cf[3] / ((1 + coupon_rate + 0.02) ** ((cd - bought_dt).days / 365)) for cf, cd in zip(cashflows, coupon_dates)])
     sell_price = (buy_price * (1 + rate * (sold_dt - bought_dt).days / 365)) / (1 - (0.001 if client_type == "Individual" else 0))
     return buy_price, sell_price
