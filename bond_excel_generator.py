@@ -94,7 +94,7 @@ def generate_excel(bought_date, sold_date, quantity, client_type, rate, filepath
 
     # Buy price = PV of all future cash flows from bought date
     buy_price = sum([
-        cf[3] / ((1 + coupon_rate - 0.02) ** ((cd - bought_dt).days / 365))
+        cf[3] / ((1 + coupon_rate - 0.002) ** ((cd - bought_dt).days / 365))
         for cf, cd in zip(cashflows, coupon_dates)
     ])
 
