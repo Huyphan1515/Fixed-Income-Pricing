@@ -2,5 +2,6 @@ services:
   - type: web
     name: bond-pricing-app
     env: python
-    buildCommand: ""
+    plan: free
+    buildCommand: pip install -r requirements.txt
     startCommand: python app.py
