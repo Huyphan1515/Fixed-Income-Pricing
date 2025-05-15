@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify, render_template
+from flask import Flask, request, jsonify, send_file, render_template
 import tempfile
 from bond_excel_generator import generate_excel
 import os
@@ -14,18 +14,30 @@ def index():
 def calculate():
     data = request.json
     temp_path = os.path.join(TEMP_DIR, next(tempfile._get_candidate_names()) + ".xlsx")
-    buy_price, sell_price = generate_excel(
+    
+    buy_price, sell_price, summary = generate_excel(
+        issue_date=data["issue_date"],
+        maturity_date=data["maturity_date"],
+        face_value=data["face_value"],
+        coupon_rate=data["coupon_rate"],
+        frequency=int(data["frequency"]),
         bought_date=data["bought_date"],
         sold_date=data["sold_date"],
+        rate=data["rate"],
         quantity=data["quantity"],
         client_type=data["client_type"],
-        rate=data["rate"],
-        filepath=temp_path
+        filepath=temp_path,
+        discount_method=data["discount_method"],
+        discount_input=data["discount_input"],
+        product_type=data["product_type"],
+        trading_fee=data["trading_fee"],
+        apply_trading_fee=data["apply_trading_fee"]
     )
+
     return jsonify({
-        "buy_price": round(buy_price, 2),
-        "sell_price": round(sell_price, 2),
-        "download_url": f"/download/{os.path.basename(temp_path)}"
+    "summary": summary,
+    "investment_table": summary.get("investment_table", []),
+    "download_url": f"/download/{os.path.basename(temp_path)}"
     })
 
 @app.route("/download/<filename>")
