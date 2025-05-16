@@ -10,22 +10,28 @@
       background: #f8f9fa;
     }
     .container {
-      max-width: 100%;
-      padding: 0 15px;
-    }
-    .widget-section {
-      max-width: 320px;
-      padding-right: 20px;
-    }
-    .widget-section iframe {
-      width: 100% !important;
-      border: none;
-      margin-bottom: 15px;
+      max-width: 1300px;
     }
     .form-section {
-      border-left: 1px solid #ccc;
       border-right: 1px solid #ccc;
-      padding: 0 20px;
+      padding-right: 30px;
+    }
+    .widget-section {
+      padding-left: 15px;
+      padding-right: 15px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .results-section {
+      padding-left: 30px;
+      padding-right: 15px;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
     .footer {
       font-size: 0.9rem;
@@ -45,36 +51,34 @@
   </style>
 </head>
 <body>
-  <div class="container mt-4">
+  <div class="container mt-5">
     <h2 class="mb-4 text-center">Dynamic Bond Pricing Calculator</h2>
-    <div class="row gx-4">
-
-      <!-- Left Column: Widgets -->
-      <div class="col-lg-3 col-md-12 widget-section">
-        <!-- Widget 1: FX Rates -->
-        <iframe height="175" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe>
-        <div style="font-size: 11px;">
-          <a href="http://www.investing.com" target="_blank">
-            <img src="https://wmt-invdn-com.investing.com/forexpros_en_logo.png" alt="Investing.com" />
+    <div class="row">
+      <!-- Left: Widgets -->
+      <div class="col-md-2 widget-section">
+        <iframe frameborder="0" scrolling="auto" height="175" width="100%" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe><br />
+        <div style="width:100%; font-size: 11px; color: #333;">
+          <a href="http://www.investing.com" target="_blank" style="float:left;">
+            <img src="https://wmt-invdn-com.investing.com/forexpros_en_logo.png" alt="Investing.com" title="Investing.com" />
           </a>
-          Exchange Rates by <a href="https://www.investing.com/" target="_blank">Investing.com</a>
+          <span style="float:right;">
+            The Exchange Rates are powered by <a href="https://www.investing.com/" rel="nofollow" target="_blank" style="color:#06529D; font-weight:bold;">Investing.com</a>.
+          </span>
         </div>
 
-        <!-- Widget 2: Interest Rates -->
-        <iframe height="60" src="https://sslirates.investing.com/index.php?rows=4&bg1=FFFFFF&bg2=F1F5F8&text_color=333333&enable_border=hide&border_color=0452A1&header_bg=0452A1&header_text=FFFFFF&force_lang=72"></iframe>
-        <div style="font-size: 11px;">
-          Interest Rates by <a href="https://ng.investing.com/" target="_blank">Investing.com Nigeria</a>
-        </div>
-
-        <!-- Widget 3: Economic Calendar -->
-        <iframe height="467" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,12,4,5&calType=week&timeZone=27&lang=1"></iframe>
-        <div style="font-size: 11px;">
-          Economic Calendar by <a href="https://www.investing.com/" target="_blank">Investing.com</a>
+        <iframe frameborder="0" scrolling="auto" height="175" width="100%" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe><br />
+        <div style="width:100%; font-size: 11px; color: #333;">
+          <a href="http://www.investing.com" target="_blank" style="float:left;">
+            <img src="https://wmt-invdn-com.investing.com/forexpros_en_logo.png" alt="Investing.com" title="Investing.com" />
+          </a>
+          <span style="float:right;">
+            The Exchange Rates are powered by <a href="https://www.investing.com/" rel="nofollow" target="_blank" style="color:#06529D; font-weight:bold;">Investing.com</a>.
+          </span>
         </div>
       </div>
 
-      <!-- Middle Column: Form -->
-      <div class="col-lg-5 col-md-12 form-section">
+      <!-- Middle: Form inputs -->
+      <div class="col-md-6 form-section">
         <form id="bond-form" class="row g-3">
           <div class="col-6">
             <label class="form-label">Bond Face Value</label>
@@ -159,8 +163,8 @@
         </form>
       </div>
 
-      <!-- Right Column: Results -->
-      <div class="col-lg-4 col-md-12">
+      <!-- Right: Results -->
+      <div class="col-md-4 results-section">
         <div id="results" class="fade-in mt-2"></div>
       </div>
     </div>
