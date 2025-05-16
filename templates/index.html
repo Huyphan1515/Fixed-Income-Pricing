@@ -10,17 +10,23 @@
       background: #f8f9fa;
     }
     .container {
-      max-width: 1200px;
+      max-width: 1150px;
     }
     .form-section {
+      padding-left: 30px;
       border-right: 1px solid #ccc;
     }
-    .fade-in {
-      animation: fadeIn 1s ease-in-out;
+    .widget-section {
+      max-height: 650px;
+      overflow-y: auto;
+      padding-right: 15px;
+      padding-left: 0 !important;
     }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+    .widget-section iframe {
+      width: 100% !important;
+      max-width: 320px;
+      display: block;
+      margin-bottom: 20px;
     }
     .footer {
       font-size: 0.9rem;
@@ -37,12 +43,6 @@
     .table th, .table td {
       vertical-align: middle;
     }
-    /* Adjust left column widgets scroll if needed */
-    .widget-section {
-      max-height: 650px;
-      overflow-y: auto;
-      padding-right: 15px;
-    }
   </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
     <h2 class="mb-4 text-center">Dynamic Bond Pricing Calculator</h2>
     <div class="row gx-4">
       <!-- Left Column: Widgets -->
-      <div class="col-md-2 widget-section">
+      <div class="col-md-3 widget-section px-0">
         <!-- Widget 1: Exchange Rates -->
         <iframe frameborder="0" height="175" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe>
         <div style="font-size: 11px; color: #333; margin-bottom: 1rem;">
@@ -58,8 +58,8 @@
           <span>The Exchange Rates are powered by <a href="https://www.investing.com/" target="_blank" style="color:#06529D; font-weight:bold;">Investing.com</a>.</span>
         </div>
 
-        <!-- Widget 2: Interest Rates (Your Provided Widget) -->
-        <iframe frameborder="0" scrolling="no" height="50" width="100%" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslirates.investing.com/index.php?rows=4&bg1=FFFFFF&bg2=F1F5F8&text_color=333333&enable_border=hide&border_color=0452A1&header_bg=0452A1&header_text=FFFFFF&force_lang=72" align="center"></iframe>
+        <!-- Widget 2: Interest Rates -->
+        <iframe frameborder="0" scrolling="no" height="50" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslirates.investing.com/index.php?rows=4&bg1=FFFFFF&bg2=F1F5F8&text_color=333333&enable_border=hide&border_color=0452A1&header_bg=0452A1&header_text=FFFFFF&force_lang=72"></iframe>
         <table width="200" style="margin-bottom: 1rem;">
           <tbody>
             <tr>
@@ -78,14 +78,14 @@
         </table>
 
         <!-- Widget 3: Economic Calendar -->
-        <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,12,4,5&calType=week&timeZone=27&lang=1" width="100%" height="467" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
+        <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,12,4,5&calType=week&timeZone=27&lang=1" height="467" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
         <div style="font-size: 11px; color: #333; margin-top: 5px;">
           Real Time Economic Calendar provided by 
           <a href="https://www.investing.com/" rel="nofollow" target="_blank" style="color: #06529D; font-weight: bold;">Investing.com</a>.
         </div>
       </div>
 
-      <!-- Middle Column: Input Form (two-column inputs) -->
+      <!-- Middle Column: Input Form -->
       <div class="col-md-5 form-section">
         <form id="bond-form" class="row g-3">
           <div class="col-6">
@@ -172,7 +172,7 @@
       </div>
 
       <!-- Right Column: Results -->
-      <div class="col-md-5">
+      <div class="col-md-4">
         <div id="results" class="fade-in mt-2"></div>
       </div>
     </div>
@@ -229,3 +229,4 @@
   </script>
 </body>
 </html>
+
