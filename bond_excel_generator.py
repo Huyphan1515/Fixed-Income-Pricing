@@ -6,8 +6,15 @@ from openpyxl.styles import Font
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from typing import List, Tuple, Dict, Any
-    # Create coupon tables
-def get_coupon_schedule(issue_date, maturity_date, face_value, coupon_rate, frequency):
+
+# Create coupon tables
+def get_coupon_schedule(
+    issue_date: datetime,
+    maturity_date: datetime,
+    face_value: float,
+    coupon_rate: float,
+    frequency: int
+) -> Tuple[List[datetime], List[List[Any]]]:
     coupon_dates = []
     cashflows = []
 
@@ -29,7 +36,8 @@ def get_coupon_schedule(issue_date, maturity_date, face_value, coupon_rate, freq
         cashflows.append([cd.date(), ex_cd.date(), f"{coupon_rate}%", round(cf, 4)])
 
     return coupon_dates, cashflows
-    # Create exportable excel files
+
+# Create exportable excel files
 def generate_excel(
     issue_date: str,
     maturity_date: str,
@@ -49,15 +57,15 @@ def generate_excel(
     apply_trading_fee: bool
 ) -> Tuple[float, float, Dict[str, Any]]:
     try:
-    
-        issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
-        maturity_date = datetime.strptime(maturity_date, "%Y-%m-%d")
+        issue_date_dt = datetime.strptime(issue_date, "%Y-%m-%d")
+        maturity_date_dt = datetime.strptime(maturity_date, "%Y-%m-%d")
         bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
         sold_dt = datetime.strptime(sold_date, "%Y-%m-%d")
-     except ValueError as e:
+    except ValueError as e:
         raise ValueError(f"Invalid date format: {e}")
+
     coupon_dates, cashflows = get_coupon_schedule(
-        issue_date, maturity_date, face_value, coupon_rate, frequency
+        issue_date_dt, maturity_date_dt, face_value, coupon_rate, frequency
     )
 
     cf_df = pd.DataFrame(cashflows, columns=["Coupon Date", "Ex-Coupon Date", "Coupon Rate", "Cashflow"])
@@ -146,7 +154,11 @@ def generate_excel(
     ws_table.append([sold_date, "Sell Bond", round(sell_price * (1 - txn_tax), 4)])
     for cell in ws_table[1]: cell.font = Font(bold=True)
 
-    wb.save(filepath)
+    try:
+        wb.save(filepath)
+    except Exception as e:
+        raise IOError(f"Error saving Excel file: {e}")
+
     summary = {
         "buy_price": round(buy_price * quantity, 4),
         "sell_price": round(sell_price * quantity*(1-txn_tax), 4),
@@ -154,13 +166,12 @@ def generate_excel(
         "txn_tax": txn_tax,
         "trading_fee": trading_fee_decimal,
         "investment_table": [
-        {"date": bought_date, "event": "Buy Bond", "amount": round(buy_price * (1 + trading_fee_decimal), 4)},
-        *[
-            {"date": str(cf[0]), "event": "Coupon Received", "amount": round(cf[3] * (1 - coupon_tax), 4)}
-            for cf, cd in zip(cashflows, coupon_dates) if bought_dt <= cd <= sold_dt
-        ],
-        {"date": sold_date, "event": "Sell Bond", "amount": round(sell_price * (1 - txn_tax), 4)}
-    ]
-}
+            {"date": bought_date, "event": "Buy Bond", "amount": round(buy_price * (1 + trading_fee_decimal), 4)},
+            *[
+                {"date": str(cf[0]), "event": "Coupon Received", "amount": round(cf[3] * (1 - coupon_tax), 4)}
+                for cf, cd in zip(cashflows, coupon_dates) if bought_dt <= cd <= sold_dt
+            ],
+            {"date": sold_date, "event": "Sell Bond", "amount": round(sell_price * (1 - txn_tax), 4)}
+        ]
+    }
     return buy_price * quantity, sell_price * quantity, summary
-
