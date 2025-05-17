@@ -29,7 +29,7 @@ def get_coupon_schedule(issue_date, maturity_date, face_value, coupon_rate, freq
 
     return coupon_dates, cashflows
     # Create exportable excel files
-def generate_excel
+def generate_excel(
     issue_date: str,
     maturity_date: str,
     face_value: float,
