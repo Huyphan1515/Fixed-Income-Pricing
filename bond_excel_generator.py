@@ -5,6 +5,7 @@ from openpyxl.utils import quote_sheetname
 from openpyxl.styles import Font
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from typing import List, Tuple, Dict, Any
     # Create coupon tables
 def get_coupon_schedule(issue_date, maturity_date, face_value, coupon_rate, frequency):
     coupon_dates = []
@@ -47,6 +48,7 @@ def generate_excel(
     trading_fee: float,
     apply_trading_fee: bool
 ) -> Tuple[float, float, Dict[str, Any]]:
+    try:
     
     issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
     maturity_date = datetime.strptime(maturity_date, "%Y-%m-%d")
