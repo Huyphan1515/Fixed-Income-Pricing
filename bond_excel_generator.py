@@ -29,10 +29,25 @@ def get_coupon_schedule(issue_date, maturity_date, face_value, coupon_rate, freq
 
     return coupon_dates, cashflows
     # Create exportable excel files
-def generate_excel(issue_date, maturity_date, face_value, coupon_rate, frequency,
-                   bought_date, sold_date, rate, quantity, client_type, filepath,
-                   discount_method, discount_input, product_type, trading_fee, apply_trading_fee):
-
+def generate_excel
+    issue_date: str,
+    maturity_date: str,
+    face_value: float,
+    coupon_rate: float,
+    frequency: int,
+    bought_date: str,
+    sold_date: str,
+    rate: float,
+    quantity: int,
+    client_type: str,
+    filepath: str,
+    discount_method: str,
+    discount_input: float,
+    product_type: str,
+    trading_fee: float,
+    apply_trading_fee: bool
+) -> Tuple[float, float, Dict[str, Any]]:
+    
     issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
     maturity_date = datetime.strptime(maturity_date, "%Y-%m-%d")
     bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
