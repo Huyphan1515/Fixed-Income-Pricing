@@ -50,11 +50,12 @@ def generate_excel(
 ) -> Tuple[float, float, Dict[str, Any]]:
     try:
     
-    issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
-    maturity_date = datetime.strptime(maturity_date, "%Y-%m-%d")
-    bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
-    sold_dt = datetime.strptime(sold_date, "%Y-%m-%d")
-
+        issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
+        maturity_date = datetime.strptime(maturity_date, "%Y-%m-%d")
+        bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
+        sold_dt = datetime.strptime(sold_date, "%Y-%m-%d")
+     except ValueError as e:
+        raise ValueError(f"Invalid date format: {e}")
     coupon_dates, cashflows = get_coupon_schedule(
         issue_date, maturity_date, face_value, coupon_rate, frequency
     )
