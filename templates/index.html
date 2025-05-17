@@ -21,6 +21,12 @@
     .widget-section iframe {
       width: 100%;
     }
+    .widget-section {
+      padding-right: 10px;
+      /* Add vertical scroll if widgets are long */
+      max-height: 90vh;
+      overflow-y: auto;
+    }
     .fade-in {
       animation: fadeIn 1s ease-in-out;
     }
@@ -43,14 +49,20 @@
     .table th, .table td {
       vertical-align: middle;
     }
+    @media (max-width: 991.98px) {
+      .widget-section, .form-section, .col-md-4 {
+        max-height: none;
+        overflow: visible;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container-fluid mt-3">
     <h2 class="text-center mb-4">Dynamic Bond Pricing Calculator</h2>
     <div class="row">
-      <!-- Left: Widgets -->
-      <div class="col-md-2 widget-section">
+      <!-- Left: Widgets (now wider) -->
+      <div class="col-md-3 widget-section">
         <iframe frameborder="0" height="175" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe>
         <div style="font-size: 11px; color: #333;">
           <a href="http://www.investing.com" target="_blank"><img src="https://wmt-invdn-com.investing.com/forexpros_en_logo.png" alt="Investing.com" /></a>
@@ -70,7 +82,7 @@
         </div>
       </div>
 
-      <!-- Middle: Form -->
+      <!-- Middle: Form (slightly narrower) -->
       <div class="col-md-6 form-section">
         <form id="bond-form" class="row g-3">
           <div class="col-6">
@@ -156,8 +168,8 @@
         </form>
       </div>
 
-      <!-- Right: Results -->
-      <div class="col-md-4">
+      <!-- Right: Results (slightly narrower) -->
+      <div class="col-md-3">
         <div id="results" class="fade-in mt-2"></div>
       </div>
     </div>
