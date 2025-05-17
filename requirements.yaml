@@ -2,4 +2,4 @@ flask
 pandas
 openpyxl
 python-dateutil
-
+typing
