@@ -114,7 +114,3 @@ Built by Huy Phan.
 - [openpyxl](https://openpyxl.readthedocs.io/)
 - [Bootstrap](https://getbootstrap.com/)
 - [Investing.com Widgets](https://www.investing.com/webmaster-tools/)
-
----
-
-Let me know if you want this tailored further or want to add badges/screenshots!
