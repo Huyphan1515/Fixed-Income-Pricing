@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from typing import List, Tuple, Dict, Any
 
-# Create coupon tables
 def get_coupon_schedule(
     issue_date: datetime,
     maturity_date: datetime,
@@ -15,8 +14,23 @@ def get_coupon_schedule(
     coupon_rate: float,
     frequency: int
 ) -> Tuple[List[datetime], List[List[Any]]]:
-    coupon_dates = []
-    cashflows = []
+    """
+    Generate a schedule of coupon dates and corresponding cashflows for a bond.
+
+    Args:
+        issue_date (datetime): The bond's issue date.
+        maturity_date (datetime): The bond's maturity date.
+        face_value (float): The nominal value of the bond.
+        coupon_rate (float): Coupon rate, as a percentage.
+        frequency (int): Number of coupon payments per year.
+
+    Returns:
+        Tuple[List[datetime], List[List[Any]]]: 
+            - List of coupon dates (as datetime objects).
+            - List of cashflow details, each entry is [coupon_date, ex_coupon_date, coupon_rate_string, cashflow_amount].
+    """
+    coupon_dates: List[datetime] = []
+    cashflows: List[List[Any]] = []
 
     temp_date = issue_date
     while True:
@@ -37,7 +51,6 @@ def get_coupon_schedule(
 
     return coupon_dates, cashflows
 
-# Create exportable excel files
 def generate_excel(
     issue_date: str,
     maturity_date: str,
@@ -56,11 +69,42 @@ def generate_excel(
     trading_fee: float,
     apply_trading_fee: bool
 ) -> Tuple[float, float, Dict[str, Any]]:
+    """
+    Generates an Excel report for a bond investment and returns investment summary.
+
+    Args:
+        issue_date (str): Bond issue date in YYYY-MM-DD format.
+        maturity_date (str): Bond maturity date in YYYY-MM-DD format.
+        face_value (float): Bond face value.
+        coupon_rate (float): Annual coupon rate as a percentage.
+        frequency (int): Number of coupon payments per year.
+        bought_date (str): Date of purchase in YYYY-MM-DD format.
+        sold_date (str): Date of sale in YYYY-MM-DD format.
+        rate (float): Repo or discount rate as a percentage.
+        quantity (int): Number of bonds.
+        client_type (str): 'Individual' or 'Corporation'.
+        filepath (str): Filepath to save the Excel file.
+        discount_method (str): Method to determine discount rate ('coupon', 'spread', 'fixed').
+        discount_input (float): Input for spread or fixed rate calculation.
+        product_type (str): 'Outright' or 'Repo'.
+        trading_fee (float): Trading fee as a percentage.
+        apply_trading_fee (bool): Whether to apply trading fee.
+
+    Returns:
+        Tuple[float, float, Dict[str, Any]]:
+            - Total buy price for all bonds.
+            - Total sell price for all bonds.
+            - Investment summary dictionary with details.
+    
+    Raises:
+        ValueError: If date parsing fails.
+        IOError: If saving the Excel file fails.
+    """
     try:
-        issue_date_dt = datetime.strptime(issue_date, "%Y-%m-%d")
-        maturity_date_dt = datetime.strptime(maturity_date, "%Y-%m-%d")
-        bought_dt = datetime.strptime(bought_date, "%Y-%m-%d")
-        sold_dt = datetime.strptime(sold_date, "%Y-%m-%d")
+        issue_date_dt: datetime = datetime.strptime(issue_date, "%Y-%m-%d")
+        maturity_date_dt: datetime = datetime.strptime(maturity_date, "%Y-%m-%d")
+        bought_dt: datetime = datetime.strptime(bought_date, "%Y-%m-%d")
+        sold_dt: datetime = datetime.strptime(sold_date, "%Y-%m-%d")
     except ValueError as e:
         raise ValueError(f"Invalid date format: {e}")
 
@@ -97,7 +141,7 @@ def generate_excel(
 
     # Determine discount rate based on user choice
     if discount_method == "coupon":
-        discount_rate = coupon_rate / 100
+        discount_rate: float = coupon_rate / 100
     elif discount_method == "spread":
         discount_rate = (coupon_rate + discount_input) / 100
     else:
@@ -114,21 +158,21 @@ def generate_excel(
         ws_pv[f"G{row}"].value = f"=D{row}*F{row}"
 
     # Calculate backend summary
-    txn_tax = 0.001 if client_type == "Individual" else 0.0
-    coupon_tax = 0.05 if client_type == "Individual" else 0.0
-    rate_decimal = rate / 100
-    trading_fee_decimal = trading_fee / 100
+    txn_tax: float = 0.001 if client_type == "Individual" else 0.0
+    coupon_tax: float = 0.05 if client_type == "Individual" else 0.0
+    rate_decimal: float = rate / 100
+    trading_fee_decimal: float = trading_fee / 100
 
-    received_cashflows = [cf for cf, cd in zip(cashflows, coupon_dates) if bought_dt <= cd <= sold_dt]
-    total_coupon_received = sum(cf[3] * (1 - coupon_tax) for cf in received_cashflows)
+    received_cashflows: List[List[Any]] = [cf for cf, cd in zip(cashflows, coupon_dates) if bought_dt <= cd <= sold_dt]
+    total_coupon_received: float = sum(cf[3] * (1 - coupon_tax) for cf in received_cashflows)
 
-    buy_price = sum([
+    buy_price: float = sum([
         cf[3] / ((1 + discount_rate) ** ((cd - bought_dt).days / 365))
         for cf, cd in zip(cashflows, coupon_dates)
     ])
 
     if product_type == "Outright":
-        sell_price = sum([
+        sell_price: float = sum([
             cf[3] / ((1 + discount_rate) ** ((cd - sold_dt).days / 365))*(1 - txn_tax - trading_fee_decimal)
             for cf, cd in zip(cashflows, coupon_dates) if cd > sold_dt
         ])
@@ -159,7 +203,7 @@ def generate_excel(
     except Exception as e:
         raise IOError(f"Error saving Excel file: {e}")
 
-    summary = {
+    summary: Dict[str, Any] = {
         "buy_price": round(buy_price * quantity, 4),
         "sell_price": round(sell_price * quantity*(1-txn_tax), 4),
         "coupon_received": round(total_coupon_received * quantity, 4),
