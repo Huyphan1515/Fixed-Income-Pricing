@@ -2,16 +2,29 @@ from flask import Flask, request, jsonify, send_file, render_template
 import tempfile
 from bond_excel_generator import generate_excel
 import os
+from typing import Any
 
 app = Flask(__name__, template_folder="templates")
 TEMP_DIR = tempfile.gettempdir()
 
 @app.route("/")
-def index():
+def index() -> str:
+    """
+    Render the main index page.
+
+    Returns:
+        str: Rendered HTML for the index page.
+    """
     return render_template("index.html")
 
 @app.route("/calculate", methods=["POST"])
-def calculate():
+def calculate() -> Any:
+    """
+    Calculate bond investment summary and generate downloadable Excel file.
+
+    Returns:
+        Response: JSON containing summary, investment table, and download URL.
+    """
     data = request.json
     temp_path = os.path.join(TEMP_DIR, next(tempfile._get_candidate_names()) + ".xlsx")
     
@@ -35,13 +48,22 @@ def calculate():
     )
 
     return jsonify({
-    "summary": summary,
-    "investment_table": summary.get("investment_table", []),
-    "download_url": f"/download/{os.path.basename(temp_path)}"
+        "summary": summary,
+        "investment_table": summary.get("investment_table", []),
+        "download_url": f"/download/{os.path.basename(temp_path)}"
     })
 
 @app.route("/download/<filename>")
-def download(filename):
+def download(filename: str) -> Any:
+    """
+    Send a generated Excel file to the client for download.
+
+    Args:
+        filename (str): The name of the file to be downloaded.
+
+    Returns:
+        Response: File download response.
+    """
     return send_file(os.path.join(TEMP_DIR, filename), as_attachment=True)
 
 if __name__ == "__main__":
