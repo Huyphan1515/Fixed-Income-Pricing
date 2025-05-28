@@ -22,7 +22,8 @@ A web application for pricing and analyzing bonds, generating cash flow schedule
 
 ## Demo
 
-![screenshot or gif placeholder]
+![image](https://github.com/user-attachments/assets/c41889d9-df73-4f8f-bca5-76554be0f9f5)
+
 
 ---
 
