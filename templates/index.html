@@ -1,228 +1,137 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bond Pricing Calculator</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background: #f8f9fa;
-      padding: 0;
-      margin: 0;
-    }
-    .container-fluid {
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-    .form-section {
-      border-right: 1px solid #ccc;
-    }
-    .widget-section iframe {
-      width: 100%;
-    }
-    .widget-section {
-      padding-right: 10px;
-      /* Add vertical scroll if widgets are long */
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .fade-in {
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    .footer {
-      font-size: 0.9rem;
-      color: #777;
-      text-align: right;
-      margin-top: 2rem;
-    }
-    .summary-box {
-      background: #fff;
-      padding: 20px;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-    }
-    .table th, .table td {
-      vertical-align: middle;
-    }
-    @media (max-width: 991.98px) {
-      .widget-section, .form-section, .col-md-4 {
-        max-height: none;
-        overflow: visible;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container-fluid mt-3">
-    <h2 class="mb-4">Bond Price Calculator</h2>
-    <div class="row">
-      <!-- Left: Widgets (now wider) -->
-      <div class="col-md-3 widget-section">
-        <iframe frameborder="0" height="175" allowtransparency="true" marginwidth="0" marginheight="0" src="https://sslfxrates.investing.com/index_exchange.php?params&inner-border-color=%23CBCBCB&border-color=%23cbcbcb&bg1=%23F6F6F6&bg2=%23ffffff&inner-text-color=%23000000&currency-name-color=%23000000&header-text-color=%23FFFFFF&force_lang=1"></iframe>
-        <div style="font-size: 11px; color: #333;">
-          <a href="http://www.investing.com" target="_blank"><img src="https://wmt-invdn-com.investing.com/forexpros_en_logo.png" alt="Investing.com" /></a>
-          <span style="font-size: 11px;">The Exchange Rates are powered by <a href="https://www.investing.com/" target="_blank" style="color:#06529D; font-weight:bold;">Investing.com</a>.</span>
-        </div>
-        <br/>
-        <!-- Widget 2: Interest Rates -->
-        <iframe height="80" src="https://sslirates.investing.com/index.php?rows=4&bg1=FFFFFF&bg2=F1F5F8&text_color=333333&enable_border=hide&border_color=0452A1&header_bg=0452A1&header_text=FFFFFF&force_lang=72"></iframe>
-        <div style="font-size: 11px;">
-          Interest Rates by <a href="https://ng.investing.com/" target="_blank">Investing.com Nigeria</a>
-        </div>
-        <br/>
-        <!-- Widget 3: Economic Calendar -->
-        <iframe height="500" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,12,4,5&calType=week&timeZone=27&lang=1"></iframe>
-        <div style="font-size: 8px;">
-          Economic Calendar by <a href="https://www.investing.com/" target="_blank">Investing.com</a>
-        </div>
-      </div>
-
-      <!-- Middle: Form (slightly narrower) -->
-      <div class="col-md-6 form-section">
-        <form id="bond-form" class="row g-3">
-          <div class="col-6">
-            <label class="form-label">Bond Face Value</label>
-            <input name="face_value" type="number" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Coupon Rate (%)</label>
-            <input name="coupon_rate" type="number" step="0.5" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Issue Date</label>
-            <input name="issue_date" type="date" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Maturity Date</label>
-            <input name="maturity_date" type="date" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Coupon Frequency</label>
-            <select name="frequency" class="form-select">
-              <option value="1">Annual</option>
-              <option value="2">Semi-Annual</option>
-              <option value="4">Quarterly</option>
-            </select>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Quantity</label>
-            <input name="quantity" type="number" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Bought Date</label>
-            <input name="bought_date" type="date" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Sold Date</label>
-            <input name="sold_date" type="date" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Repo Rate (%)</label>
-            <input name="rate" type="number" step="0.5" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Client Type</label>
-            <select name="client_type" class="form-select">
-              <option value="Individual">Individual</option>
-              <option value="Corporation">Corporation</option>
-            </select>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Sell Method</label>
-            <select name="product_type" class="form-select">
-              <option value="Repo">Repo</option>
-              <option value="Outright">Outright</option>
-            </select>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Trading Fee (%)</label>
-            <input name="trading_fee" type="number" step="0.1" class="form-control" required />
-          </div>
-          <div class="col-6">
-            <label class="form-label">Add Trading Fee to Sell Price?</label>
-            <select name="apply_trading_fee" class="form-select">
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Discount Method</label>
-            <select name="discount_method" class="form-select">
-              <option value="coupon">Coupon Rate</option>
-              <option value="spread">Coupon Rate + x%</option>
-              <option value="fixed">Fixed Rate</option>
-            </select>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Discount Input (x%, can be negative)</label>
-            <input name="discount_input" type="number" step="0.1" class="form-control" />
-          </div>
-          <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary px-5">Calculate</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Right: Results (slightly narrower) -->
-      <div class="col-md-3">
-        <div id="results" class="fade-in mt-2"></div>
-      </div>
-    </div>
-    <div class="footer container-fluid">Built by Huy Phan</div>
+<!-- ... retain your HTML head and styles ... -->
+<form id="bond-form" class="row g-3">
+  <div class="col-6">
+    <label class="form-label">Bond Type</label>
+    <select id="bondType" name="bond_type" class="form-select" required>
+      <option value="zero">Zero Coupon</option>
+      <option value="fixed">Fixed Coupon</option>
+      <option value="floating">Floating Coupon</option>
+    </select>
   </div>
+  <div class="col-6" id="div_discount_rate">
+    <label class="form-label">Discount Rate (%)</label>
+    <input id="discount_rate" name="discount_rate" type="number" step="0.01" class="form-control" required />
+  </div>
+  <div class="col-6" id="div_face_value">
+    <label class="form-label">Bond Face Value</label>
+    <input name="face_value" type="number" class="form-control" required />
+  </div>
+  <div class="col-6" id="div_coupon_rate">
+    <label class="form-label">Coupon Rate (%)</label>
+    <input name="coupon_rate" type="number" step="0.5" class="form-control" />
+  </div>
+  <div class="col-6" id="div_frequency">
+    <label class="form-label">Coupon Frequency</label>
+    <select name="frequency" class="form-select">
+      <option value="1">Annual</option>
+      <option value="2">Semi-Annual</option>
+      <option value="4">Quarterly</option>
+    </select>
+  </div>
+  <div class="col-6" id="div_num_periods" style="display:none;">
+    <label class="form-label">Number of Coupon Periods</label>
+    <input id="num_periods" name="num_periods" type="number" min="1" max="50" class="form-control" />
+  </div>
+  <div class="col-12" id="div_coupon_rate_table" style="display:none;">
+    <label>Enter Rate for Each Period</label>
+    <table class="table" id="coupon_rate_table">
+      <thead>
+        <tr><th>Period</th><th>Rate (%)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <!-- ... keep the rest of your form unchanged ... -->
+  <!-- Just be sure to keep the original names for your backend -->
+</form>
 
-  <script>
-    document.getElementById("bond-form").onsubmit = async function (e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const data = {};
-      formData.forEach((v, k) => {
-        data[k] = isNaN(v) || v === "" ? v : parseFloat(v);
-      });
-      data.apply_trading_fee = data.apply_trading_fee === "Yes";
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const bondType = document.getElementById('bondType');
+  const divDiscount = document.getElementById('div_discount_rate');
+  const divFaceVal = document.getElementById('div_face_value');
+  const divCoupon = document.getElementById('div_coupon_rate');
+  const divFreq = document.getElementById('div_frequency');
+  const divNumPeriods = document.getElementById('div_num_periods');
+  const divTable = document.getElementById('div_coupon_rate_table');
+  const numPeriods = document.getElementById('num_periods');
+  const couponTable = document.getElementById('coupon_rate_table').querySelector('tbody');
 
-      try {
-        const res = await fetch("/calculate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-        const json = await res.json();
+  function updateForm() {
+    if (bondType.value === 'zero') {
+      divDiscount.style.display = '';
+      divCoupon.style.display = 'none';
+      divFreq.style.display = 'none';
+      divNumPeriods.style.display = 'none';
+      divTable.style.display = 'none';
+    } else {
+      divDiscount.style.display = '';
+      divCoupon.style.display = '';
+      divFreq.style.display = '';
+      divNumPeriods.style.display = '';
+      // Show/hide table depending on numPeriods
+      if (numPeriods.value > 0) divTable.style.display = '';
+    }
+  }
+  bondType.addEventListener('change', function() {
+    updateForm();
+  });
+  numPeriods.addEventListener('input', function() {
+    couponTable.innerHTML = '';
+    let n = parseInt(numPeriods.value, 10);
+    if (isNaN(n) || n <= 0) {
+      divTable.style.display = 'none';
+      return;
+    }
+    divTable.style.display = '';
+    for (let i = 1; i <= n; i++) {
+      let row = document.createElement('tr');
+      row.innerHTML = `<td>${i}</td>
+        <td><input type="number" name="rate_period_${i}" step="0.01" required class="form-control" /></td>`;
+      couponTable.appendChild(row);
+    }
+  });
+  updateForm();
 
-        const summary = json.summary;
-        const tableRows = summary.investment_table.map(row =>
-          `<tr><td>${row.date}</td><td>${row.event}</td><td>${row.amount.toLocaleString()} VND</td></tr>`
-        ).join("");
+  document.getElementById("bond-form").onsubmit = async function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((v, k) => {
+      data[k] = isNaN(v) || v === "" ? v : parseFloat(v);
+    });
+    data.apply_trading_fee = data.apply_trading_fee === "Yes";
+    data.bond_type = bondType.value;
 
-        document.getElementById("results").innerHTML = `
-          <div class="summary-box">
-            <h5>Investment Summary</h5>
-            <p><strong>Buy Amount:</strong> ${summary?.buy_price?.toLocaleString() || "N/A"} VND</p>
-            <p><strong>Sell Amount:</strong> ${summary?.sell_price?.toLocaleString() || "N/A"} VND</p>
-            <p><strong>Total Coupon Received:</strong> ${summary?.coupon_received?.toLocaleString() || "N/A"} VND</p>
-            <p><strong>Transaction Tax Rate:</strong> ${summary?.txn_tax != null ? (summary.txn_tax * 100).toFixed(2) + "%" : "N/A"}</p>
-            <p><strong>Trading Fee:</strong> ${summary?.trading_fee != null ? (summary.trading_fee * 100).toFixed(2) + "%" : "N/A"}</p>
-            <a class="btn btn-success mt-2" href="${json.download_url}" download>Download Excel</a>
-          </div>
-          <div class="mt-4">
-            <h5>Investment Table</h5>
-            <table class="table table-bordered">
-              <thead><tr><th>Date</th><th>Event</th><th>Net Amount Per Bond</th></tr></thead>
-              <tbody>${tableRows}</tbody>
-            </table>
-          </div>
-        `;
-      } catch (err) {
-        alert("Something went wrong. Please check console for details.");
-        console.error(err);
+    // For fixed/floating, collect coupon_rates array
+    if (bondType.value === "fixed" || bondType.value === "floating") {
+      data.coupon_rates = [];
+      let n = parseInt(numPeriods.value, 10);
+      for (let i = 1; i <= n; i++) {
+        const val = form.querySelector(`[name=rate_period_${i}]`).value;
+        data.coupon_rates.push(parseFloat(val));
       }
-    };
-  </script>
-</body>
-</html>
+    }
+    // For zero-coupon, coupon_rates is empty
+    else {
+      data.coupon_rates = [];
+      data.num_periods = 0;
+    }
+
+    try {
+      const res = await fetch("/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      // ... render results as before ...
+      // (You can keep your current result rendering logic here.)
+    } catch (err) {
+      alert("Something went wrong. Please check console for details.");
+      console.error(err);
+    }
+  };
+});
+</script>
