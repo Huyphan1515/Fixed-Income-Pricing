@@ -20,46 +20,47 @@
     @media (max-width: 991.98px) {
       .widget-section, .form-section, .col-md-4 { max-height: none; overflow: visible; }
     }
-    /* Logo styles */
     .logo-container {
         background-color: #ffffff;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 8px 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.07);
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        gap: 20px;
-        max-width: 90%;
-        width: 400px;
-        margin: 0 auto 2rem auto;
+        gap: 12px;
+        max-width: 350px;
+        width: auto;
+        margin: 0 0 1.5rem 0;
     }
     .logo-text {
-        font-size: 1.5rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: #334155;
-        text-align: center;
+        text-align: left;
+        margin-left: 6px;
+        margin-bottom: 0;
+        line-height: 1.1;
     }
-    svg {
-        width: 100%;
-        max-width: 200px;
+    .logo-container svg {
+        width: 70px;
+        max-width: 70px;
+        min-width: 50px;
         height: auto;
         display: block;
     }
   </style>
 </head>
 <body>
-    <div class="logo-container">
-        <div class="logo-text">Bond Price Calculation</div>
+  <div class="container-fluid mt-3">
+    <!-- LOGO AND TITLE, left-aligned and compact -->
+    <div class="logo-container mb-4">
         <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="200" height="100" fill="#4a90e2" rx="15" ry="15"/>
-
             <path d="M 30 20 L 30 80 M 70 20 L 70 80 M 30 50 L 70 50"
                   stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
-
             <path d="M 100 20 L 100 80 M 100 20 C 130 20, 130 50, 100 50"
                   stroke="#ffffff" stroke-width="10" stroke-linecap="round" fill="none"/>
-
             <path d="M 120 70 Q 140 50, 170 30"
                   stroke="#a8dadc" stroke-width="6" stroke-linecap="round" fill="none"
                   stroke-dasharray="8 4">
@@ -68,11 +69,9 @@
             <circle cx="170" cy="30" r="5" fill="#a8dadc">
                 <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
             </circle>
-
             <text x="175" y="85" font-family="Inter, sans-serif" font-size="20" fill="#ffffff" text-anchor="end" font-weight="bold">$</text>
         </svg>
-        <p class="text-gray-600 text-sm">
-        </p>
+        <span class="logo-text">Bond Price Calculator</span>
     </div>
     <div class="row">
       <!-- Left: Widgets -->
@@ -91,7 +90,7 @@
         </div>
         <br/>
         <!-- Widget 3: Economic Calendar -->
-        <iframe height="500" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97&calendar=1&time=week&lang=1"></iframe>
+        <iframe height="500" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97,20,11,12,35,36,43,26,12,4,5,110,34,97&calendar=1&time=week&lang=1"></iframe>
         <div style="font-size: 8px;">
           Economic Calendar by <a href="https://www.investing.com/" target="_blank">Investing.com</a>
         </div>
