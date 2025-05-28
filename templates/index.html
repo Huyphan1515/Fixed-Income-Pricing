@@ -159,9 +159,10 @@
             <label class="form-label">Sold Date</label>
             <input name="sold_date" type="date" class="form-control" required />
           </div>
-          <div class="col-6">
+          <!-- REPO RATE FIELD (conditionally shown) -->
+          <div class="col-6" id="div_repo_rate" style="display:none;">
             <label class="form-label">Repo Rate (%)</label>
-            <input name="rate" type="number" step="0.01" class="form-control" required />
+            <input name="rate" type="number" step="0.01" class="form-control" />
           </div>
           <div class="col-6">
             <label class="form-label">Client Type</label>
@@ -210,6 +211,25 @@
       const divTable = document.getElementById('div_coupon_rate_table');
       const numPeriods = document.getElementById('num_periods');
       const couponTable = document.getElementById('coupon_rate_table').querySelector('tbody');
+      // REPO RATE LOGIC
+      const productType = document.querySelector('[name="product_type"]');
+      const divRepoRate = document.getElementById('div_repo_rate');
+      const repoRateInput = divRepoRate.querySelector('input[name="rate"]');
+
+      function updateRepoRateVisibility() {
+        if (productType.value === "Repo") {
+          divRepoRate.style.display = '';
+          repoRateInput.required = true;
+        } else {
+          divRepoRate.style.display = 'none';
+          repoRateInput.required = false;
+          repoRateInput.value = '';
+        }
+      }
+      if (productType) {
+        productType.addEventListener('change', updateRepoRateVisibility);
+        updateRepoRateVisibility(); // Initialize on page load
+      }
 
       function updateForm() {
         if (bondType.value === 'zero') {
@@ -258,6 +278,7 @@
         });
         data.apply_trading_fee = data.apply_trading_fee === "Yes";
         data.bond_type = bondType.value;
+        data.product_type = productType.value;
 
         if (bondType.value === "fixed" || bondType.value === "floating") {
           data.coupon_rates = [];
