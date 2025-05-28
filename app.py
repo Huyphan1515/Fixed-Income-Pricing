@@ -4,6 +4,14 @@ from bond_excel_generator import generate_excel
 import os
 from typing import Any
 
+# --- PATCH START: Safe float helper ---
+def safe_float(val, default=0.0):
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return default
+# --- PATCH END ---
+
 app = Flask(__name__, template_folder="templates")
 TEMP_DIR = tempfile.gettempdir()
 
@@ -18,23 +26,23 @@ def calculate() -> Any:
     bond_type = data.get("bond_type", "fixed")
     num_periods = int(data.get("num_periods", 0))
     coupon_rates = data.get("coupon_rates", [])
-    discount_rate = float(data.get("discount_rate", 0))
+    discount_rate = safe_float(data.get("discount_rate", 0))
 
     # For backward compatibility with original form:
-    coupon_rate = float(data.get("coupon_rate", 0))
+    coupon_rate = safe_float(data.get("coupon_rate", 0))
     frequency = int(data.get("frequency", 1))
 
     buy_price, sell_price, summary = generate_excel(
         bond_type=bond_type,
         issue_date=data["issue_date"],
         maturity_date=data["maturity_date"],
-        face_value=float(data["face_value"]),
+        face_value=safe_float(data["face_value"], 0),
         bought_date=data["bought_date"],
         sold_date=data["sold_date"],
         quantity=int(data["quantity"]),
         client_type=data["client_type"],
         product_type=data["product_type"],
-        trading_fee=float(data["trading_fee"]),
+        trading_fee=safe_float(data["trading_fee"], 0),
         apply_trading_fee=bool(data["apply_trading_fee"]),
         num_periods=num_periods,
         coupon_rates=coupon_rates,
