@@ -19,6 +19,32 @@ TEMP_DIR = tempfile.gettempdir()
 def index() -> str:
     return render_template("index.html")
 
+@app.route("/posts")
+def posts():
+    posts = [
+        {
+            "title": "What is a Bond?",
+            "desc": "A beginner's guide to bonds and how they work.",
+            "url": "https://www.investopedia.com/terms/b/bond.asp"
+        },
+        {
+            "title": "The Basics of Bonds",
+            "desc": "Learn the fundamentals of bonds, their types, and how they are used.",
+            "url": "https://www.investopedia.com/financial-edge/0312/the-basics-of-bonds.aspx"
+        },
+        {
+            "title": "Bond Yields Explained",
+            "desc": "Understand what bond yield means and how it is calculated.",
+            "url": "https://www.investopedia.com/terms/b/bond-yield.asp"
+        },
+        {
+            "title": "Bond Valuation",
+            "desc": "How to calculate the value of a bond.",
+            "url": "https://www.investopedia.com/terms/b/bond-valuation.asp"
+        }
+    ]
+    return render_template("posts.html", posts=posts)
+
 @app.route("/calculate", methods=["POST"])
 def calculate() -> Any:
     data = request.json
