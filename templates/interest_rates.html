@@ -4,13 +4,157 @@
   <meta charset="UTF-8" />
   <title>Interest Rates Offered by Banks</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .interest-table td, .interest-table th { 
+      vertical-align: middle; 
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    .interest-table img {
+      max-height: 32px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .interest-table span {
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+  </style>
 </head>
 <body>
   {% include 'navbar.html' %}
   <div class="container mt-4">
     <h2>Vietnam Bank Interest Rates</h2>
     <div class="table-responsive mb-2">
-      {{ table_html|safe }}
+      <table class="table table-bordered interest-table">
+        <thead>
+          <tr id="header-table-interest">
+            <th class="title-bank">Ngân hàng</th>
+            <th>Không kỳ hạn</th>
+            <th>1 Tháng</th>
+            <th>3 Tháng</th>
+            <th>6 Tháng</th>
+            <th>9 Tháng</th>
+            <th>12 Tháng</th>
+            <th>18 Tháng</th>
+            <th>24 Tháng</th>
+          </tr>
+        </thead>
+        <tbody id="tb-interest-rate" class="scroll-firefox">
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/abbank22022023175341.jpg"><span>ABBANK</span></td>
+            <td>0.1 %</td><td>3 %</td><td>3.7 %</td><td>5.2 %</td><td>5.3 %</td><td>5.5 %</td><td>5.3 %</td><td>5.2 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/acb22022023175713.png"><span>ACB</span></td>
+            <td>--</td><td>3.1 %</td><td>3.5 %</td><td>4.2 %</td><td>4.3 %</td><td>4.9 %</td><td>--</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/agribank.png"><span>Agribank</span></td>
+            <td>0.2 %</td><td>2.1 %</td><td>2.4 %</td><td>3.5 %</td><td>3.5 %</td><td>4.7 %</td><td>4.7 %</td><td>4.8 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/bacabank22022023175428.png"><span>Bac A Bank</span></td>
+            <td>0.5 %</td><td>3.9 %</td><td>4.2 %</td><td>5.35 %</td><td>5.45 %</td><td>5.7 %</td><td>6 %</td><td>6 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/bid.png"><span>BIDV</span></td>
+            <td>--</td><td>2 %</td><td>2.3 %</td><td>3.3 %</td><td>3.3 %</td><td>4.7 %</td><td>4.7 %</td><td>4.9 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/BVB22022023141421.PNG"><span>BVBank</span></td>
+            <td>--</td><td>3.95 %</td><td>4.15 %</td><td>5.15 %</td><td>5.3 %</td><td>5.6 %</td><td>5.9 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/EIB22022023141841.PNG"><span>Eximbank</span></td>
+            <td>--</td><td>4.3 %</td><td>4.5 %</td><td>4.9 %</td><td>4.9 %</td><td>5.1 %</td><td>5.6 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/HDB22022023142340.PNG"><span>HDBank</span></td>
+            <td>--</td><td>3.85 %</td><td>3.95 %</td><td>5.3 %</td><td>5.7 %</td><td>5.6 %</td><td>6.1 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/klbank22022023175106.png"><span>Kienlongbank</span></td>
+            <td>--</td><td>3.3 %</td><td>3.3 %</td><td>5 %</td><td>5 %</td><td>5.3 %</td><td>5.25 %</td><td>5.25 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/LPB22022023142600.PNG"><span>LPBank</span></td>
+            <td>--</td><td>3 %</td><td>3.2 %</td><td>4.1 %</td><td>4.1 %</td><td>5 %</td><td>5.3 %</td><td>5.3 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/mbb.jpg"><span>MB</span></td>
+            <td>0.1 %</td><td>3.2 %</td><td>3.6 %</td><td>4.2 %</td><td>4.2 %</td><td>4.85 %</td><td>4.65 %</td><td>5.7 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/MSB22022023142919.PNG"><span>MSB</span></td>
+            <td>--</td><td>--</td><td>3 %</td><td>3.6 %</td><td>3.6 %</td><td>4 %</td><td>4 %</td><td>4 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/logo2_4efce22022023180036.png"><span>Nam A Bank</span></td>
+            <td>0.5 %</td><td>3.7 %</td><td>3.9 %</td><td>4.7 %</td><td>5 %</td><td>5.3 %</td><td>5.6 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/NVB22022023143038.PNG"><span>NCB</span></td>
+            <td>--</td><td>4 %</td><td>4.2 %</td><td>5.35 %</td><td>5.45 %</td><td>5.6 %</td><td>5.6 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/ocb22022023182838.jpg"><span>OCB</span></td>
+            <td>--</td><td>3.8 %</td><td>4 %</td><td>4.9 %</td><td>4.9 %</td><td>5 %</td><td>5.2 %</td><td>5.4 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/PGB22022023143135.PNG"><span>PGBank</span></td>
+            <td>--</td><td>3.4 %</td><td>3.8 %</td><td>5 %</td><td>4.9 %</td><td>5.4 %</td><td>5.8 %</td><td>5.7 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/STB19052023145656.PNG"><span>Sacombank</span></td>
+            <td>--</td><td>3.3 %</td><td>3.6 %</td><td>4.9 %</td><td>4.9 %</td><td>5.4 %</td><td>5.6 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/SGB22022023143225.PNG"><span>Saigonbank</span></td>
+            <td>--</td><td>3.3 %</td><td>3.6 %</td><td>4.8 %</td><td>4.9 %</td><td>5.6 %</td><td>5.8 %</td><td>5.8 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/SSB22022023143426.PNG"><span>SeABank</span></td>
+            <td>--</td><td>2.95 %</td><td>3.45 %</td><td>3.75 %</td><td>3.95 %</td><td>4.5 %</td><td>5.45 %</td><td>5.45 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/SHB22022023143313.PNG"><span>SHB</span></td>
+            <td>--</td><td>3.5 %</td><td>3.8 %</td><td>4.9 %</td><td>5 %</td><td>5.3 %</td><td>5.5 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/tcb.jpg"><span>Techcombank</span></td>
+            <td>--</td><td>3.05 %</td><td>3.55 %</td><td>4.85 %</td><td>4.85 %</td><td>5.75 %</td><td>5.75 %</td><td>5.85 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/tpb.jpg"><span>TPBank</span></td>
+            <td>--</td><td>3.5 %</td><td>3.8 %</td><td>4.6 %</td><td>--</td><td>--</td><td>5.5 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/vib.png"><span>VIB</span></td>
+            <td>0.25 %</td><td>3.6 %</td><td>3.8 %</td><td>4.7 %</td><td>4.7 %</td><td>5 %</td><td>5.1 %</td><td>5.2 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/VAB22022023143802.PNG"><span>VietABank</span></td>
+            <td>--</td><td>3.7 %</td><td>4 %</td><td>5.1 %</td><td>5.3 %</td><td>5.6 %</td><td>5.8 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/VBB22022023143854.PNG"><span>Vietbank</span></td>
+            <td>--</td><td>4.1 %</td><td>4.4 %</td><td>5.4 %</td><td>5.4 %</td><td>5.8 %</td><td>5.9 %</td><td>--</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/vcb.jpg"><span>Vietcombank</span></td>
+            <td>0.1 %</td><td>1.6 %</td><td>1.9 %</td><td>2.9 %</td><td>2.9 %</td><td>4.6 %</td><td>--</td><td>4.7 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/ctg.png"><span>Vietinbank</span></td>
+            <td>0.1 %</td><td>1.6 %</td><td>1.9 %</td><td>1.9 %</td><td>3 %</td><td>4.7 %</td><td>4.7 %</td><td>4.8 %</td>
+          </tr>
+          <tr>
+            <td><img src="https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/ImageInterestRates/vpb512x512bb22022023113228.jpg"><span>VPBank</span></td>
+            <td>--</td><td>3.7 %</td><td>3.8 %</td><td>4.7 %</td><td>4.7 %</td><td>5.2 %</td><td>5.2 %</td><td>--</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div>
       <small>Source: <a href="https://cafef.vn/du-lieu/lai-suat-ngan-hang.chn" target="_blank">CafeF</a></small>
