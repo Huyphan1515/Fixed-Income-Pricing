@@ -3,3 +3,5 @@ pandas
 openpyxl
 python-dateutil
 typing
+requests
+beautifulsoup4
