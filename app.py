@@ -2,15 +2,15 @@ from flask import Flask, request, jsonify, send_file, render_template
 import tempfile
 from bond_excel_generator import generate_excel
 import os
+import requests
+from bs4 import BeautifulSoup
 from typing import Any
 
-# --- PATCH START: Safe float helper ---
 def safe_float(val, default=0.0):
     try:
         return float(val)
     except (TypeError, ValueError):
         return default
-# --- PATCH END ---
 
 app = Flask(__name__, template_folder="templates")
 TEMP_DIR = tempfile.gettempdir()
@@ -45,6 +45,23 @@ def posts():
     ]
     return render_template("posts.html", posts=posts)
 
+def get_interest_rate_table():
+    url = "https://cafef.vn/du-lieu/lai-suat-ngan-hang.chn"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.content, "html.parser")
+        table_container = soup.find("div", class_="table-responsive")
+        table = table_container.find("table") if table_container else None
+        return str(table) if table else "<p>Interest rate table not found.</p>"
+    except Exception as e:
+        return f"<p>Unable to fetch interest rates. ({e})</p>"
+
+@app.route("/interest-rates")
+def interest_rates():
+    table_html = get_interest_rate_table()
+    return render_template("interest_rates.html", table_html=table_html)
+
 @app.route("/calculate", methods=["POST"])
 def calculate() -> Any:
     data = request.json
@@ -54,7 +71,6 @@ def calculate() -> Any:
     coupon_rates = data.get("coupon_rates", [])
     discount_rate = safe_float(data.get("discount_rate", 0))
 
-    # For backward compatibility with original form:
     coupon_rate = safe_float(data.get("coupon_rate", 0))
     frequency = int(data.get("frequency", 1))
 
