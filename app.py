@@ -6,6 +6,12 @@ import requests
 from bs4 import BeautifulSoup
 from typing import Any
 
+# --- Add OpenAI import ---
+import openai
+
+# --- Add your OpenAI API key here (for demo, not for production) ---
+openai.api_key = "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"
+
 def safe_float(val, default=0.0):
     try:
         return float(val)
@@ -103,6 +109,37 @@ def calculate() -> Any:
 @app.route("/download/<filename>")
 def download(filename: str) -> Any:
     return send_file(os.path.join(TEMP_DIR, filename), as_attachment=True)
+
+# --- Add the NLP feature route below ---
+@app.route("/nlp", methods=["GET", "POST"])
+def nlp():
+    answer = summary = None
+    user_input = ""
+    function = "qa"
+    if request.method == 'POST':
+        user_input = request.form['user_input']
+        function = request.form['function']
+        prompt = (
+            f"Answer this question clearly and concisely:\n{user_input}"
+            if function == 'qa'
+            else f"Summarize the following text:\n{user_input}"
+        )
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=512
+        )
+        result = response['choices'][0]['message']['content']
+        if function == 'qa':
+            answer = result
+        else:
+            summary = result
+    return render_template("nlp.html",
+                           answer=answer,
+                           summary=summary,
+                           user_input=user_input,
+                           function=function)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
