@@ -44,7 +44,7 @@ def hf_qa(question, context):
     api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
     if not api_token:
         return "Hugging Face API token not set."
-    API_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-distilled-squad"
+    API_URL = "https://api-inference.huggingface.co/models/deepset/roberta-base-squad2"
     headers = {"Authorization": f"Bearer {api_token}"}
     data = {"inputs": {"question": question, "context": context}}
     try:
