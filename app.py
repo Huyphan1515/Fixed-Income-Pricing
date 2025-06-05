@@ -14,7 +14,6 @@ def safe_float(val, default=0.0):
     except (TypeError, ValueError):
         return default
 
-# Hugging Face Summarization with error handling
 def hf_summarize(text):
     api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
     if not api_token:
@@ -28,7 +27,6 @@ def hf_summarize(text):
         try:
             result = response.json()
         except Exception:
-            # Non-JSON response (likely model is loading or error)
             return f"Error: Hugging Face returned non-JSON response: {response.text}"
         if isinstance(result, list) and "summary_text" in result[0]:
             return result[0]["summary_text"]
@@ -39,11 +37,11 @@ def hf_summarize(text):
     except requests.exceptions.RequestException as e:
         return f"Error communicating with Hugging Face: {e}"
 
-# Hugging Face Q&A with error handling
 def hf_qa(question, context):
     api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
     if not api_token:
         return "Hugging Face API token not set."
+    # Use a reliable Q&A model
     API_URL = "https://api-inference.huggingface.co/models/deepset/roberta-base-squad2"
     headers = {"Authorization": f"Bearer {api_token}"}
     data = {"inputs": {"question": question, "context": context}}
@@ -118,7 +116,6 @@ def calculate():
     num_periods = int(data.get("num_periods", 0))
     coupon_rates = data.get("coupon_rates", [])
     discount_rate = safe_float(data.get("discount_rate", 0))
-
     coupon_rate = safe_float(data.get("coupon_rate", 0))
     frequency = int(data.get("frequency", 1))
 
@@ -155,19 +152,23 @@ def download(filename):
 @app.route("/nlp", methods=["GET", "POST"])
 def nlp():
     answer = summary = None
-    user_input = ""
+    user_question = user_context = user_input = ""
     function = "qa"
     if request.method == 'POST':
-        user_input = request.form['user_input']
         function = request.form['function']
         if function == 'qa':
-            answer = hf_qa(user_input, user_input)
+            user_question = request.form.get('user_question', '')
+            user_context = request.form.get('user_context', '')
+            answer = hf_qa(user_question, user_context)
         elif function == 'summarize':
+            user_input = request.form.get('user_input', '')
             summary = hf_summarize(user_input)
     return render_template(
         "nlp.html",
         answer=answer,
         summary=summary,
+        user_question=user_question,
+        user_context=user_context,
         user_input=user_input,
         function=function
     )
