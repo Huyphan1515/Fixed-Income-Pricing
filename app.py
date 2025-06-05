@@ -5,13 +5,9 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from typing import Any
-
-# --- Add OpenAI import ---
+import os
 import openai
-
-# --- Add your OpenAI API key here (for demo, not for production) ---
-openai.api_key = "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"
-
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 def safe_float(val, default=0.0):
     try:
         return float(val)
