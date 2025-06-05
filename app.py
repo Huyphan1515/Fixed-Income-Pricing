@@ -1,15 +1,12 @@
-from flask import Flask, request, jsonify, send_file, render_template
-import tempfile
-from bond_excel_generator import generate_excel
 import os
 import requests
+from flask import Flask, request, render_template, jsonify, send_file
+import tempfile
+from bond_excel_generator import generate_excel
 from bs4 import BeautifulSoup
-from typing import Any
-import openai
 
-# --- Secure OpenAI API key loading ---
-openai_api_key = os.environ.get("OPENAI_API_KEY")
-client = openai.OpenAI(api_key=openai_api_key)
+app = Flask(__name__, template_folder="templates")
+TEMP_DIR = tempfile.gettempdir()
 
 def safe_float(val, default=0.0):
     try:
@@ -17,11 +14,43 @@ def safe_float(val, default=0.0):
     except (TypeError, ValueError):
         return default
 
-app = Flask(__name__, template_folder="templates")
-TEMP_DIR = tempfile.gettempdir()
+# Hugging Face Summarization
+def hf_summarize(text):
+    api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
+    if not api_token:
+        return "Hugging Face API token not set."
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    data = {"inputs": text}
+    response = requests.post(API_URL, headers=headers, json=data, timeout=60)
+    result = response.json()
+    if isinstance(result, list) and "summary_text" in result[0]:
+        return result[0]["summary_text"]
+    else:
+        # Handle errors or waiting for model
+        if isinstance(result, dict) and result.get("error"):
+            return f"Error: {result['error']}"
+        return str(result)
+
+# Hugging Face Q&A
+def hf_qa(question, context):
+    api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
+    if not api_token:
+        return "Hugging Face API token not set."
+    API_URL = "https://api-inference.huggingface.co/models/distilbert-base-cased-distilled-squad"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    data = {"inputs": {"question": question, "context": context}}
+    response = requests.post(API_URL, headers=headers, json=data, timeout=60)
+    result = response.json()
+    if "answer" in result:
+        return result["answer"]
+    elif "error" in result:
+        return f"Error: {result['error']}"
+    else:
+        return str(result)
 
 @app.route("/")
-def index() -> str:
+def index():
     return render_template("index.html")
 
 @app.route("/posts")
@@ -68,7 +97,7 @@ def interest_rates():
     return render_template("interest_rates.html", table_html=table_html)
 
 @app.route("/calculate", methods=["POST"])
-def calculate() -> Any:
+def calculate():
     data = request.json
     temp_path = os.path.join(TEMP_DIR, next(tempfile._get_candidate_names()) + ".xlsx")
     bond_type = data.get("bond_type", "fixed")
@@ -106,10 +135,9 @@ def calculate() -> Any:
     })
 
 @app.route("/download/<filename>")
-def download(filename: str) -> Any:
+def download(filename):
     return send_file(os.path.join(TEMP_DIR, filename), as_attachment=True)
 
-# --- NLP (Q&A and Summarize) route: now SAFE and compatible with openai>=1.0.0 ---
 @app.route("/nlp", methods=["GET", "POST"])
 def nlp():
     answer = summary = None
@@ -118,22 +146,12 @@ def nlp():
     if request.method == 'POST':
         user_input = request.form['user_input']
         function = request.form['function']
-        prompt = (
-            f"Answer this question clearly and concisely:\n{user_input}"
-            if function == 'qa'
-            else f"Summarize the following text:\n{user_input}"
-        )
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=512
-        )
-        result = response.choices[0].message.content
         if function == 'qa':
-            answer = result
-        else:
-            summary = result
+            # For Q&A, ask the question using user_input as both question and context.
+            # For a better experience, you can have a separate question and context input in your HTML.
+            answer = hf_qa(user_input, user_input)
+        elif function == 'summarize':
+            summary = hf_summarize(user_input)
     return render_template("nlp.html",
                            answer=answer,
                            summary=summary,
