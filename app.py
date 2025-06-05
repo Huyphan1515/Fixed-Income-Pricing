@@ -14,7 +14,7 @@ def safe_float(val, default=0.0):
     except (TypeError, ValueError):
         return default
 
-# Hugging Face Summarization
+# Hugging Face Summarization with error handling
 def hf_summarize(text):
     api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
     if not api_token:
@@ -22,17 +22,24 @@ def hf_summarize(text):
     API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
     headers = {"Authorization": f"Bearer {api_token}"}
     data = {"inputs": text}
-    response = requests.post(API_URL, headers=headers, json=data, timeout=60)
-    result = response.json()
-    if isinstance(result, list) and "summary_text" in result[0]:
-        return result[0]["summary_text"]
-    else:
-        # Handle errors or waiting for model
-        if isinstance(result, dict) and result.get("error"):
+    try:
+        response = requests.post(API_URL, headers=headers, json=data, timeout=60)
+        response.raise_for_status()
+        try:
+            result = response.json()
+        except Exception:
+            # Non-JSON response (likely model is loading or error)
+            return f"Error: Hugging Face returned non-JSON response: {response.text}"
+        if isinstance(result, list) and "summary_text" in result[0]:
+            return result[0]["summary_text"]
+        elif isinstance(result, dict) and "error" in result:
             return f"Error: {result['error']}"
-        return str(result)
+        else:
+            return str(result)
+    except requests.exceptions.RequestException as e:
+        return f"Error communicating with Hugging Face: {e}"
 
-# Hugging Face Q&A
+# Hugging Face Q&A with error handling
 def hf_qa(question, context):
     api_token = os.environ.get("HUGGINGFACE_API_TOKEN")
     if not api_token:
@@ -40,14 +47,21 @@ def hf_qa(question, context):
     API_URL = "https://api-inference.huggingface.co/models/distilbert-base-cased-distilled-squad"
     headers = {"Authorization": f"Bearer {api_token}"}
     data = {"inputs": {"question": question, "context": context}}
-    response = requests.post(API_URL, headers=headers, json=data, timeout=60)
-    result = response.json()
-    if "answer" in result:
-        return result["answer"]
-    elif "error" in result:
-        return f"Error: {result['error']}"
-    else:
-        return str(result)
+    try:
+        response = requests.post(API_URL, headers=headers, json=data, timeout=60)
+        response.raise_for_status()
+        try:
+            result = response.json()
+        except Exception:
+            return f"Error: Hugging Face returned non-JSON response: {response.text}"
+        if isinstance(result, dict) and "answer" in result:
+            return result["answer"]
+        elif isinstance(result, dict) and "error" in result:
+            return f"Error: {result['error']}"
+        else:
+            return str(result)
+    except requests.exceptions.RequestException as e:
+        return f"Error communicating with Hugging Face: {e}"
 
 @app.route("/")
 def index():
@@ -147,16 +161,16 @@ def nlp():
         user_input = request.form['user_input']
         function = request.form['function']
         if function == 'qa':
-            # For Q&A, ask the question using user_input as both question and context.
-            # For a better experience, you can have a separate question and context input in your HTML.
             answer = hf_qa(user_input, user_input)
         elif function == 'summarize':
             summary = hf_summarize(user_input)
-    return render_template("nlp.html",
-                           answer=answer,
-                           summary=summary,
-                           user_input=user_input,
-                           function=function)
+    return render_template(
+        "nlp.html",
+        answer=answer,
+        summary=summary,
+        user_input=user_input,
+        function=function
+    )
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
