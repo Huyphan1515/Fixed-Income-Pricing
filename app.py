@@ -5,9 +5,12 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from typing import Any
-import os
 import openai
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+# --- Secure OpenAI API key loading ---
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=openai_api_key)
+
 def safe_float(val, default=0.0):
     try:
         return float(val)
@@ -106,7 +109,7 @@ def calculate() -> Any:
 def download(filename: str) -> Any:
     return send_file(os.path.join(TEMP_DIR, filename), as_attachment=True)
 
-# --- Add the NLP feature route below ---
+# --- NLP (Q&A and Summarize) route: now SAFE and compatible with openai>=1.0.0 ---
 @app.route("/nlp", methods=["GET", "POST"])
 def nlp():
     answer = summary = None
@@ -120,13 +123,13 @@ def nlp():
             if function == 'qa'
             else f"Summarize the following text:\n{user_input}"
         )
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
             max_tokens=512
         )
-        result = response['choices'][0]['message']['content']
+        result = response.choices[0].message.content
         if function == 'qa':
             answer = result
         else:
